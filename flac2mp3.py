@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 
 from itertools import compress
 import multiprocessing as mp
@@ -269,9 +269,12 @@ if __name__ == '__main__':
                             f.replace(common_prefix, '').strip('/'))
                     try:
                         ensure_directory(os.path.dirname(dest))
-                        shutil.copy(f, dest)
-                        log.info("Copied '%s' ('%s' matched)", short_fname,
-                                match.group(0))
+                        if(args.skip_existing and os.path.isfile(dest)):
+                            log.info("Skipped '%s'", short_fname)
+                        else:
+                            shutil.copy(f, dest)
+                            log.info("Copied '%s' ('%s' matched)", short_fname,
+                                    match.group(0))
                     except Exception, e:
                         log.error("Failed to copy '%s' (%s)", short_fname,
                                 e.message)
